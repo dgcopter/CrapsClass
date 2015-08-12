@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+
 namespace CrapsClass
 {
     class CrapsClass
@@ -12,18 +13,23 @@ namespace CrapsClass
         private char Phase; // "C" = come out, "P" = point
         private double PLBet; // pass line bet
         private double PLOdds; // pass line odds
+        private int Point;
 
         private bool HardFour;
         private bool HardSix;
         private bool HardEight;
         private bool HardTen;
 
-
         // Properties
         public char CurPhase
         {
             get { return Phase; }
             set { Phase = value; }
+        }
+        public int CurPoint
+        {
+            get { return Point; }
+            set { Point = value; }
         }
         public double PassLineBet
         {
@@ -69,7 +75,39 @@ namespace CrapsClass
 
             return (rnd.Next(1, sides));
         }
+        public double GetPassLineResult(int DieOne, int DieTwo)
+        {
+            double dblResultMultiplier = 0;
+            int DieSum = DieOne + DieTwo;
 
+            if (Phase == 'C')
+            {
+                if (DieSum == 7 || DieSum == 11)
+                    dblResultMultiplier = 1;
+                else if (DieSum == 2 || DieSum == 3 || DieSum == 12)
+                    dblResultMultiplier = 0;
+                else
+                {
+                    Phase = 'P';
+                    Point = DieSum;
+                }
+            }
+            else
+            {
+                if (DieSum == 7)
+                {
+                    dblResultMultiplier = 0;
+                    Phase = 'C';
+                }
+                else if (DieSum == Point)
+                {
+                    dblResultMultiplier = 1;
+                    Phase = 'C';
+                }
+
+            }
+            return dblResultMultiplier;
+        }
 
 
     }
