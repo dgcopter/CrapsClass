@@ -3,11 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 
 namespace CrapsClass
 {
-    class CrapsClass
+    class Craps
     {
         // Member Fields
         private char Phase; // "C" = come out, "P" = point
@@ -15,12 +16,38 @@ namespace CrapsClass
         private double PLOdds; // pass line odds
         private int Point;
 
+        private double CurPLBet; // total current pass line bet
+        private double CurOddsBet; // total current odds bry
+        private double Bank;
         private bool HardFour;
         private bool HardSix;
         private bool HardEight;
         private bool HardTen;
 
+        // Constructors
+
+        public Craps () // Create a new instance of the game with default values
+        {
+            Phase = 'C';
+            PLBet = 0.00;
+            PLOdds = 0.00;
+            Point = 0;
+            CurPLBet = 0.00;
+            CurOddsBet = 0.00;
+            Bank = 5000.00;
+            HardFour = false;
+            HardSix = false;
+            HardEight = false;
+            HardTen = false;
+        }
+
         // Properties
+
+        public double CurBank
+        {
+            get { return Bank; }
+            set { Bank = value; }
+        }
         public char CurPhase
         {
             get { return Phase; }
@@ -34,12 +61,12 @@ namespace CrapsClass
         public double PassLineBet
         {
             get { return PLBet; }
-            set { PLBet = value; }
+           // set { PLBet = value; }  -- this needs additional logic 'n shit
         }
         public double PassLineOdds
         {
             get { return PLOdds; }
-            set { PLOdds = value; }
+            //set { PLOdds = value; } -- this needs additional logic 'n shit
         }
         public bool BetHardFour
         {
@@ -75,6 +102,39 @@ namespace CrapsClass
 
             return (rnd.Next(1, sides));
         }
+
+
+
+        private bool TestBet(double Bet) // internal function to test if user entered a valid bet
+        {
+            bool test;
+            if (Bet + CurPLBet + CurOddsBet <= Bank)
+                test = true;
+            else
+            {
+                test = false;
+                MessageBox.Show("Invalid Bet.", "Invalid Bet");
+            }
+            return test;
+        }
+
+        public void PlacePLBet (double Bet)
+        {
+            if (TestBet(Bet))
+            {
+                PLBet = Bet;
+
+                if (CurPLBet == 0)
+                    Bank -= CurPLBet;
+                else
+                    Bank = Bet;
+
+                CurPLBet = Bet;
+
+            }
+        }
+
+
         public double GetPassLineResult(int DieOne, int DieTwo)
         {
             double dblResultMultiplier = 0;
